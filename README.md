@@ -1,24 +1,24 @@
-# MOT Baseline 统一运行接口
+# MOT Baseline Unified Running Interface
 
-本目录用于统一运行多种多目标跟踪 baseline，并提供统一的评估脚本。
+This directory is used to run multiple multi-object tracking baselines through a unified interface and provides a unified evaluation script.
 
-当前包含两个核心功能：
+It currently includes two core functions:
 
-1. 给视频帧目录，直接输出 MOT 格式的跟踪结果 `txt`。
-2. 给 `gt.txt` 和跟踪结果 `txt`，计算 `MOTA / IDF1 / IDP / IDR / IDSwitch`。
+1. Given a video frame directory, directly output tracking results in MOT-format `txt`.
+2. Given `gt.txt` and a tracking result `txt`, calculate `MOTA / IDF1 / IDP / IDR / IDSwitch`.
 
-## 目录结构
+## Directory Structure
 
 ```text
 Baseline/
-├── baseline_track.py   # 从视频帧运行指定 baseline，输出跟踪结果 txt
-├── evaluate_mot.py     # 用 gt.txt 和 result.txt 计算跟踪指标
-└── README.md           # 使用说明
+├── baseline_track.py   # Run the specified baseline from video frames and output tracking result txt
+├── evaluate_mot.py     # Calculate tracking metrics using gt.txt and result.txt
+└── README.md           # Usage instructions
 ```
 
-## 支持的模型
+## Supported Models
 
-`baseline_track.py` 的 `--model` 支持以下名称：
+The `--model` argument in `baseline_track.py` supports the following names:
 
 ```text
 FairMOT
@@ -33,15 +33,15 @@ MOTR
 MOTRv2
 ```
 
-## 数据路径约定
+## Data Path Convention
 
-默认视频帧目录统一写成：
+The default video frame directory is uniformly written as:
 
 ```text
 MOT\baseline\data\img1
 ```
 
-也就是说，你的视频帧建议放成下面这种形式：
+That is, it is recommended to place your video frames in the following form:
 
 ```text
 MOT/
@@ -56,21 +56,21 @@ MOT/
             └── gt.txt
 ```
 
-如果你的数据不在这个位置，也可以在命令里用 `--frames` 和 `--gt` 手动指定绝对路径。
+If your data is not in this location, you can also manually specify absolute paths in the command using `--frames` and `--gt`.
 
-## 环境安装
+## Environment Installation
 
-建议使用 Python 3.8 或以上版本。
+Python 3.8 or later is recommended.
 
 ```bash
 pip install numpy opencv-python motmetrics pandas scipy
 ```
 
-`evaluate_mot.py` 默认使用 `motmetrics`。如果没有安装，会直接提示安装，避免使用非标准 IDF1 口径。
+`evaluate_mot.py` uses `motmetrics` by default. If it is not installed, the script will directly prompt you to install it, avoiding the use of a non-standard IDF1 definition.
 
-## 1. 从视频帧输出跟踪结果 txt
+## 1. Output Tracking Result txt from Video Frames
 
-运行 ByteTrack：
+Run ByteTrack:
 
 ```bash
 python baseline_track.py ^
@@ -79,7 +79,7 @@ python baseline_track.py ^
   --output MOT\baseline\outputs\bytetrack_result.txt
 ```
 
-运行 BoT-SORT：
+Run BoT-SORT:
 
 ```bash
 python baseline_track.py ^
@@ -88,7 +88,7 @@ python baseline_track.py ^
   --output MOT\baseline\outputs\botsort_result.txt
 ```
 
-运行 TrackFormer：
+Run TrackFormer:
 
 ```bash
 python baseline_track.py ^
@@ -97,7 +97,7 @@ python baseline_track.py ^
   --output MOT\baseline\outputs\trackformer_result.txt
 ```
 
-运行 MOTRv2：
+Run MOTRv2:
 
 ```bash
 python baseline_track.py ^
@@ -106,7 +106,7 @@ python baseline_track.py ^
   --output MOT\baseline\outputs\motrv2_result.txt
 ```
 
-如果你的视频帧就放在默认位置 `MOT\baseline\data\img1`，可以省略 `--frames`：
+If your video frames are placed in the default location `MOT\baseline\data\img1`, you can omit `--frames`:
 
 ```bash
 python baseline_track.py ^
@@ -114,51 +114,51 @@ python baseline_track.py ^
   --output MOT\baseline\outputs\bytetrack_result.txt
 ```
 
-如果不写 `--output`，默认输出到：
+If `--output` is not specified, the default output path is:
 
 ```text
 MOT\baseline\outputs\<model>_result.txt
 ```
 
-例如：
+For example:
 
 ```bash
 python baseline_track.py --model bytetrack
 ```
 
-会生成：
+will generate:
 
 ```text
 MOT\baseline\outputs\bytetrack_result.txt
 ```
 
-输出的 txt 是 MOTChallenge 常用格式：
+The output txt uses the common MOTChallenge format:
 
 ```text
 frame,id,x,y,w,h,score,-1,-1,-1
 ```
 
-示例：
+Example:
 
 ```text
 1,1,877.92,577.95,136.88,132.32,0.9000,-1,-1,-1
 ```
 
-## 2. 计算跟踪指标
+## 2. Calculate Tracking Metrics
 
-假设 ground truth 文件是：
+Assume the ground truth file is:
 
 ```text
 MOT\baseline\data\gt\gt.txt
 ```
 
-跟踪结果是：
+The tracking result is:
 
 ```text
 MOT\baseline\outputs\bytetrack_result.txt
 ```
 
-运行：
+Run:
 
 ```bash
 python evaluate_mot.py ^
@@ -166,7 +166,7 @@ python evaluate_mot.py ^
   --result MOT\baseline\outputs\bytetrack_result.txt
 ```
 
-输出示例：
+Example output:
 
 ```text
 ============================================================
@@ -177,9 +177,9 @@ Tracking Evaluation
 ============================================================
 ```
 
-## Python 代码中调用
+## Calling from Python Code
 
-你也可以在其它 Python 文件中直接调用：
+You can also call it directly from other Python files:
 
 ```python
 from baseline_track import run_tracking
@@ -199,16 +199,16 @@ metrics = evaluate(
 print(metrics)
 ```
 
-## 注意事项
+## Notes
 
-本目录的重点是统一 baseline 调用接口和评估流程。
+The focus of this directory is to provide a unified baseline calling interface and evaluation workflow.
 
-`baseline_track.py` 内置了一个基于 OpenCV 前景分割的简单检测器，用于让代码可以直接从视频帧跑通。它不代表各论文官方完整模型的检测能力。
+`baseline_track.py` includes a simple detector based on OpenCV foreground segmentation, which allows the code to run directly from video frames. It does not represent the detection capability of the complete official models from the respective papers.
 
-如果要做正式论文对比实验，建议：
+If you want to conduct formal comparison experiments for a paper, it is recommended to:
 
-1. 使用同一个检测器生成检测框。
-2. 将检测框送入不同 baseline 的跟踪逻辑。
-3. 使用同一个 `evaluate_mot.py` 和同一个 IoU 阈值计算指标。
+1. Use the same detector to generate detection boxes.
+2. Feed the detection boxes into the tracking logic of different baselines.
+3. Use the same `evaluate_mot.py` and the same IoU threshold to calculate metrics.
 
-这样得到的结果更适合写进论文或实验表格。
+The results obtained this way are more suitable for inclusion in a paper or experiment table.
